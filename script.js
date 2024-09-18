@@ -22,8 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
             findings.push('Book Patient for Colonoscopy.');
         } else if (age < 50 && familyHistory) {
             findings.push('Book Patient for Colonoscopy.');
-        } else {
-            findings.push('Passed.');
         }
 
         // Check for high blood pressure
