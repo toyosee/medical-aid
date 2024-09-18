@@ -6,22 +6,33 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update notifications based on user input
     function updateNotifications() {
         // Clear previous notifications
-        document.getElementById('notifications').innerHTML = '';
+        document.getElementById('notifications').innerHTML = ''
 
         // Collect findings based on input
         const findings = [];
-        const age = Number(document.getElementById('age').value) || 0;
-        const familyHistory = document.querySelector('input[name="family-history"]:checked')?.value === '1';
-        const systolic = Number(document.getElementById('systolic').value) || 0;
-        const diastolic = Number(document.getElementById('diastolic').value) || 0;
-        const weight = Number(document.getElementById('weight').value) || 0;
-        const height = Number(document.getElementById('height').value) || 0;
+        const age = Number(document.getElementById('age').value) || 0
+        const familyHistory = document.querySelector('input[name="family-history"]:checked')?.value === '1'
+        const gender = document.getElementById('gender').value
+        const systolic = Number(document.getElementById('systolic').value) || 0
+        const diastolic = Number(document.getElementById('diastolic').value) || 0
+        const weight = Number(document.getElementById('weight').value) || 0
+        const height = Number(document.getElementById('height').value) || 0
 
         // Check conditions for colonoscopy
         if (age >= 50) {
-            findings.push('Book Patient for Colonoscopy.');
+            findings.push('Schedule Patient for Colonoscopy.');
         } else if (age < 50 && familyHistory) {
-            findings.push('Book Patient for Colonoscopy.');
+            findings.push('Schedule Patient for Colonoscopy.');
+        }
+
+        // Check for Pap smear test
+        if (gender === '0' && age >= 21 && age <= 65) { // '0' indicates Female
+            findings.push('Schedule Pap Smear Test.');
+        }
+
+        // Check for HIV screening
+        if ((age >= 15 && age <= 65)) {
+            findings.push('Schedule HIV Screening.');
         }
 
         // Check for high blood pressure
@@ -57,11 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Real-time update on input changes
-    document.getElementById('age').addEventListener('input', updateNotifications);
-    document.getElementById('systolic').addEventListener('input', updateNotifications);
-    document.getElementById('diastolic').addEventListener('input', updateNotifications);
-    document.getElementById('weight').addEventListener('input', updateNotifications);
-    document.getElementById('height').addEventListener('input', updateNotifications);
+    document.getElementById('age').addEventListener('input', updateNotifications)
+    document.getElementById('gender').addEventListener('input', updateNotifications)
+    document.getElementById('systolic').addEventListener('input', updateNotifications)
+    document.getElementById('diastolic').addEventListener('input', updateNotifications)
+    document.getElementById('weight').addEventListener('input', updateNotifications)
+    document.getElementById('height').addEventListener('input', updateNotifications)
     document.querySelectorAll('input[name="family-history"]').forEach(radio => {
         radio.addEventListener('change', updateNotifications);
     });
