@@ -10,13 +10,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Collect findings based on input
         const findings = [];
-        const age = Number(document.getElementById('age').value) || 0
-        const familyHistory = document.querySelector('input[name="family-history"]:checked')?.value === '1'
-        const gender = document.getElementById('gender').value
-        const systolic = Number(document.getElementById('systolic').value) || 0
-        const diastolic = Number(document.getElementById('diastolic').value) || 0
-        const weight = Number(document.getElementById('weight').value) || 0
-        const height = Number(document.getElementById('height').value) || 0
+        const age = Number(document.getElementById('age').value) || 0;
+        const familyHistory = document.querySelector('input[name="family-history"]:checked')?.value === '1';
+        const gender = document.getElementById('gender').value;
+        const systolic = Number(document.getElementById('systolic').value) || 0;
+        const diastolic = Number(document.getElementById('diastolic').value) || 0;
+        const weight = Number(document.getElementById('weight').value) || 0;
+        const height = Number(document.getElementById('height').value) || 0;
 
         // Check conditions for colonoscopy
         if (age >= 50) {
@@ -35,9 +35,14 @@ document.addEventListener('DOMContentLoaded', function () {
             findings.push('Schedule HIV Screening.');
         }
 
-        // Check for high blood pressure
-        if (systolic > 140 || diastolic > 90) {
-            findings.push('Patient has High Blood Pressure.');
+        // Check for high and low blood pressure only if both values are provided
+        if (systolic > 0 && diastolic > 0) {
+            if (systolic > 140 || diastolic > 90) {
+                findings.push('Patient has High Blood Pressure.');
+            }
+            if (systolic < 90 || diastolic < 60) {
+                findings.push('Patient has Low Blood Pressure.');
+            }
         }
 
         // Check for obesity (BMI calculation)
@@ -68,12 +73,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Real-time update on input changes
-    document.getElementById('age').addEventListener('input', updateNotifications)
-    document.getElementById('gender').addEventListener('input', updateNotifications)
-    document.getElementById('systolic').addEventListener('input', updateNotifications)
-    document.getElementById('diastolic').addEventListener('input', updateNotifications)
-    document.getElementById('weight').addEventListener('input', updateNotifications)
-    document.getElementById('height').addEventListener('input', updateNotifications)
+    document.getElementById('age').addEventListener('input', updateNotifications);
+    document.getElementById('gender').addEventListener('input', updateNotifications);
+    document.getElementById('systolic').addEventListener('input', updateNotifications);
+    document.getElementById('diastolic').addEventListener('input', updateNotifications);
+    document.getElementById('weight').addEventListener('input', updateNotifications);
+    document.getElementById('height').addEventListener('input', updateNotifications);
     document.querySelectorAll('input[name="family-history"]').forEach(radio => {
         radio.addEventListener('change', updateNotifications);
     });
@@ -129,6 +134,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Reset form after print operation
-        resetFormAndNotifications()
+        resetFormAndNotifications();
     }
 });
