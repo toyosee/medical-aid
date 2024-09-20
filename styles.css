@@ -54,22 +54,19 @@ input:focus {
 
 /* Button Styles */
 button {
-  padding: 10px;
-  background-color: #28a745;
+  padding: 12px 20px;
+  background-color: #ff0080; /* Change to your preferred color */
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px; /* Slightly more rounded corners */
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  font-size: 16px; /* Increase font size */
+  transition: background-color 0.3s, transform 0.2s; /* Add transition for effects */
 }
 
 button:hover {
-  background-color: #218838;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add light shadow on hover */
-}
-
-button:active {
-  background-color: #1e7e34; /* Darker green on press */
+  background-color: #a91b60; /* Change to a darker shade on hover */
+  transform: translateY(-2px); /* Slightly lift the button */
 }
 
 /* Notification Board Styling */
@@ -82,19 +79,38 @@ button:active {
   margin-top: 20px;
 }
 
-.notification-board h4 {
-  margin-bottom: 10px;
-}
-
-/* Individual Notifications */
+/* Individual Notification Styles */
 .notification {
-  background-color: white;
-  color: #ff0080; /* Pink text */
-  padding: 5px;
+  padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
-  animation: slideIn 0.5s ease-out forwards; /* Slide in animation */
+  display: flex;
+  align-items: center;
+  opacity: 0; /* Start hidden */
+  transition: opacity 0.5s ease-in-out;
 }
+
+.notification.visible {
+  opacity: 1; /* Fade in */
+}
+
+/* Critical Notification */
+.notification.critical {
+  background-color: white; /* Light red background */
+  color: #ff0080; /* Darker red text */
+}
+
+/* Routine Notification */
+.notification.routine {
+  background-color: white; /* Light green background */
+  color: #a91b60; /* Darker green text */
+}
+
+/* Notification Icons */
+.notification-icon {
+  margin-right: 10px; /* Space between icon and text */
+}
+
 
 /* Findings Count */
 #findings {

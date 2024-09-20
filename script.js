@@ -6,70 +6,68 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update notifications based on user input
     function updateNotifications() {
         // Clear previous notifications
-        document.getElementById('notifications').innerHTML = ''
+        document.getElementById('notifications').innerHTML = '';
 
         // Collect findings based on input
         const findings = [];
-        const age = Number(document.getElementById('age').value) || 0;
+        const age = Number(document.getElementById('age').value);
         const familyHistory = document.querySelector('input[name="family-history"]:checked')?.value === '1';
         const gender = document.getElementById('gender').value;
-        const systolic = Number(document.getElementById('systolic').value) || 0;
-        const diastolic = Number(document.getElementById('diastolic').value) || 0;
-        const weight = Number(document.getElementById('weight').value) || 0;
-        const height = Number(document.getElementById('height').value) || 0;
+        const systolic = Number(document.getElementById('systolic').value);
+        const diastolic = Number(document.getElementById('diastolic').value);
+        const weight = Number(document.getElementById('weight').value);
+        const height = Number(document.getElementById('height').value);
         const menopause = document.querySelector('input[name="menopause"]:checked')?.value === '1';
 
-        // Check conditions for colonoscopy
-        if (age >= 50) {
-            findings.push('Schedule Colonoscopy.');
-        } else if (age < 50 && familyHistory) {
-            findings.push('Schedule Colonoscopy.');
+        // Check conditions for notifications
+        if (age >= 50 || (age < 50 && familyHistory)) {
+            findings.push({ message: 'Schedule Colonoscopy.', type: 'routine' });
         }
 
-        // Advise for breast cancer screening
-        if(age >= 40 && gender === '0'){
-            findings.push('Schedule Breast Cancer Screening (Q2 Years)')
+        if (age >= 40 && gender === '0') {
+            findings.push({ message: 'Schedule Breast Cancer Screening (Q2 Years)', type: 'routine' });
         }
 
-        // Check for Bone density screening
         if (gender === '0' && (age > 65 || (age <= 64 && menopause))) {
-            findings.push('Schedule Bone Density Screening.');
-        }        
-
-        // Check for Pap smear test
-        if (gender === '0' && age >= 21 && age <= 65) { // '0' indicates Female
-            findings.push('Schedule Pap Smear Test.');
+            findings.push({ message: 'Schedule Bone Density Screening.', type: 'routine' });
         }
 
-        // Check for HIV screening
-        if ((age >= 15 && age <= 65)) {
-            findings.push('Schedule HIV Screening.');
+        if (gender === '0' && age >= 21 && age <= 65) {
+            findings.push({ message: 'Schedule Pap Smear Test.', type: 'routine' });
         }
 
-        // Check for high and low blood pressure only if both values are provided
+        if (age >= 15 && age <= 65) {
+            findings.push({ message: 'Schedule HIV Screening.', type: 'routine' });
+        }
+
         if (systolic > 0 && diastolic > 0) {
             if (systolic > 140 || diastolic > 90) {
-                findings.push('Patient has High Blood Pressure.');
+                findings.push({ message: 'Patient has High Blood Pressure.', type: 'critical' });
             }
             if (systolic < 90 || diastolic < 60) {
-                findings.push('Patient has Low Blood Pressure.');
+                findings.push({ message: 'Patient has Low Blood Pressure.', type: 'critical' });
             }
         }
 
-        // Check for obesity (BMI calculation)
         if (height > 0) {
             const bmi = weight / (height * height);
             if (bmi >= 30) {
-                findings.push('Patient is Obese.');
+                findings.push({ message: 'Patient is Obese.', type: 'critical' });
             }
         }
 
         // Add findings to notification board
         findings.forEach(finding => {
             const notificationDiv = document.createElement('div');
-            notificationDiv.className = 'notification';
-            notificationDiv.innerText = `- ${finding}`;
+            notificationDiv.className = `notification ${finding.type}`; // Use type for styling
+            const icon = finding.type === 'critical' 
+                ? '<i class="fas fa-exclamation-triangle notification-icon"></i>' 
+                : '<i class="fas fa-check-circle notification-icon"></i>';
+            notificationDiv.innerHTML = `${icon} - ${finding.message}`;
             document.getElementById('notifications').appendChild(notificationDiv);
+            setTimeout(() => {
+                notificationDiv.classList.add('visible'); // Fade in
+            }, 10); // Delay to allow the append to take effect
         });
 
         // Update findings count
@@ -150,4 +148,28 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset form after print operation
         resetFormAndNotifications();
     }
+
+    // exporting to PDF
+    async function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+    
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text("Medical Findings", 10, 10);
+    
+        // Collect data from notifications
+        const findings = [];
+        document.querySelectorAll('#notifications .notification').forEach((notification) => {
+            findings.push(notification.innerText);
+        });
+    
+        // Add findings to PDF
+        findings.forEach((finding, index) => {
+            doc.text(`${index + 1}. ${finding}`, 10, 20 + (10 * index)); // Adjust the Y position for each line
+        });
+    
+        // Save the PDF
+        doc.save('health_findings.pdf');
+    }
+    
 });

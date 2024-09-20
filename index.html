@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="/images/healthcare.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
 
     </style>
@@ -31,8 +32,8 @@
                     <form id="medical-form">
 
                         <div class="form-group">
-                            <label for="age">Age:</label>
-                            <input type="number" id="age" name="age" class="form-control" placeholder="Enter age" required>
+                            <label for="age">Age <span title="Please enter your age in years.">:</span></label>
+                            <input type="number" id="age" name="age" min="0" max="120" required />
                         </div>
 
                         <div class="form-group">
@@ -55,17 +56,25 @@
                             <input type="radio" id="menopause-no" name="menopause" value="0"> No
                         </div>
 
-                        <label for="systolic">Systolic Blood Pressure:</label>
-                        <input type="number" id="systolic" required>
+                        <div class="form-group">
+                            <label for="systolic">Systolic BP:</label>
+                            <input type="number" id="systolic" required>
+                        </div>
                     
-                        <label for="diastolic">Diastolic Blood Pressure:</label>
-                        <input type="number" id="diastolic" required>
+                        <div class="form-group">
+                            <label for="diastolic">Diastolic BP:</label>
+                            <input type="number" id="diastolic" required>
+                        </div>
                     
-                        <label for="weight">Weight (kg):</label>
-                        <input type="number" id="weight" required>
+                        <div class="form-group">
+                            <label for="weight">Weight (kg) <span title="Please enter your weight in kilograms.">:</span></label>
+                            <input type="number" id="weight" name="weight" min="0" required />
+                        </div>
                     
-                        <label for="height">Height (m):</label>
-                        <input type="text" id="height" required>
+                        <div class="form-group">
+                            <label for="height">Height (m) <span title="Please enter your height in meters.">:</span></label>
+                            <input type="text" id="height" name="height" min="0" required />
+                        </div>
 
                         <button type="submit" class="btn btn-block mb-3 btn-transform">Diagnose</button>
                     </form>
@@ -82,6 +91,7 @@
                                 <textarea id="doctor-note" name="doctor_note" rows="4" class="form-control" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-transform mb-3">Submit</button>
+                            <!-- <button id="export-pdf-button">Export to PDF</button> -->
                             <button type="button" id="reset-button" class="btn btn-transform btn-block">Reset</button>
                         </form>
                     </div>
