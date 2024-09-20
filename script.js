@@ -17,13 +17,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const diastolic = Number(document.getElementById('diastolic').value) || 0;
         const weight = Number(document.getElementById('weight').value) || 0;
         const height = Number(document.getElementById('height').value) || 0;
+        const menopause = document.querySelector('input[name="menopause"]:checked')?.value === '1';
 
         // Check conditions for colonoscopy
         if (age >= 50) {
-            findings.push('Schedule Patient for Colonoscopy.');
+            findings.push('Schedule Colonoscopy.');
         } else if (age < 50 && familyHistory) {
-            findings.push('Schedule Patient for Colonoscopy.');
+            findings.push('Schedule Colonoscopy.');
         }
+
+        // Advise for breast cancer screening
+        if(age >= 40 && gender === '0'){
+            findings.push('Schedule Breast Cancer Screening (Q2 Years)')
+        }
+
+        // Check for Bone density screening
+        if (gender === '0' && (age > 65 || (age <= 64 && menopause))) {
+            findings.push('Schedule Bone Density Screening.');
+        }        
 
         // Check for Pap smear test
         if (gender === '0' && age >= 21 && age <= 65) { // '0' indicates Female
@@ -80,6 +91,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('weight').addEventListener('input', updateNotifications);
     document.getElementById('height').addEventListener('input', updateNotifications);
     document.querySelectorAll('input[name="family-history"]').forEach(radio => {
+        radio.addEventListener('change', updateNotifications);
+    });
+    document.querySelectorAll('input[name="menopause"]').forEach(radio => {
         radio.addEventListener('change', updateNotifications);
     });
 
