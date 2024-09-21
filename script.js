@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const diastolic = Number(document.getElementById('diastolic').value);
         const weight = Number(document.getElementById('weight').value);
         const height = Number(document.getElementById('height').value);
-        const menopause = document.querySelector('input[name="menopause"]:checked')?.value === '1';
+        // const menopause = document.querySelector('input[name="menopause"]:checked')?.value === '1';
 
         // Check conditions for notifications
         if (age >= 50 || (age < 50 && familyHistory)) {
@@ -28,9 +28,13 @@ document.addEventListener('DOMContentLoaded', function () {
             findings.push({ message: 'Schedule Breast Cancer Screening (Q2 Years)', type: 'routine' });
         }
 
-        if (gender === '0' && (age > 65 || (age <= 64 && menopause))) {
+        if (age >= 65 && gender === '0') {
             findings.push({ message: 'Schedule Bone Density Screening.', type: 'routine' });
         }
+
+        // if (gender === '0' && (age > 65 || (age <= 64 && menopause))) {
+        //     findings.push({ message: 'Schedule Bone Density Screening.', type: 'routine' });
+        // }
 
         if (gender === '0' && age >= 21 && age <= 65) {
             findings.push({ message: 'Schedule Pap Smear Test.', type: 'routine' });
@@ -102,9 +106,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('input[name="family-history"]').forEach(radio => {
         radio.addEventListener('change', updateNotifications);
     });
-    document.querySelectorAll('input[name="menopause"]').forEach(radio => {
-        radio.addEventListener('change', updateNotifications);
-    });
+    // document.querySelectorAll('input[name="menopause"]').forEach(radio => {
+    //     radio.addEventListener('change', updateNotifications);
+    // });
 
     // Function to reset the form and notifications
     function resetFormAndNotifications() {
