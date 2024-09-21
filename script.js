@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
             findings.push({ message: 'Schedule HIV Screening.', type: 'routine' });
         }
 
+        if (gender === "0" && (age >= 16 && age <= 55)) {
+            findings.push({ message: 'Schedule HCG.', type: 'routine' });
+        }
+
         if (systolic > 0 && diastolic > 0) {
             if (systolic > 140 || diastolic > 90) {
                 findings.push({ message: 'Patient has High Blood Pressure.', type: 'critical' });
@@ -49,11 +53,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (height > 0) {
-            const bmi = weight / (height * height);
+        if (height > 0 && weight > 0) {
+            const bmi = (weight / (height * height)) * 703 // Multiply by 703 for lbs and inches
             if (bmi >= 30) {
-                findings.push({ message: 'Patient is Obese.', type: 'critical' });
+                findings.push({ message: `Patient is Obese. BMI is ${bmi.toFixed(1)}kg/m\u00B2`, type: 'critical' })
             }
+            // else if (bmi >= 25) {
+            //     findings.push({ message: `Patient is Overweight. BMI is ${bmi.toFixed(1)}kg/m\u00B2`, type: 'warning' })
+            // } else if (bmi < 18.5) {
+            //     findings.push({ message: `Patient is Underweight. BMI is ${bmi.toFixed(1)}kg/m\u00B2`, type: 'warning' }) 
+            // } else {
+            //     findings.push({ message: `Patient has a Normal BMI. ${bmi.toFixed(1)}kg/m\u00B2`, type: 'routine' })
+            // }
         }
 
         // Add findings to notification board
