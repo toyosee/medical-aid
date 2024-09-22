@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const doctorNoteSection = document.getElementById('doctor-note-section');
     doctorNoteSection.style.display = 'none';
 
+    // Function to get checkbox values
+    function getCheckedValues(name) {
+        const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+        return Array.from(checkboxes).map(cb => cb.value);
+    }
+
     // Function to update notifications based on user input
     function updateNotifications() {
         // Clear previous notifications
@@ -16,59 +22,73 @@ document.addEventListener('DOMContentLoaded', function () {
         const systolic = Number(document.getElementById('systolic').value);
         const diastolic = Number(document.getElementById('diastolic').value);
         const weight = Number(document.getElementById('weight').value);
-        const height = Number(document.getElementById('height').value);
-        // const menopause = document.querySelector('input[name="menopause"]:checked')?.value === '1';
+        // Collect values from feet and inches inputs
+        const heightFeet = Number(document.getElementById('height-feet').value);
+        const heightInches = Number(document.getElementById('height-inches').value);
+        const chronicIllnesses = getCheckedValues('chronic-illness');
+        const sickleCell = getCheckedValues('sickle-cell').length > 0 || getCheckedValues('spleen-problems').length > 0;
+        const smoker = document.querySelector('input[name="smoke"]:checked')?.value === '1';
+        const reducedImmunity = getCheckedValues('reduced-immunity').length > 0;
+        const specialEnvironment = document.querySelector('input[name="special-environment"]:checked')?.value === '1';
+
+        // Convert the total height to inches
+        const totalHeightInInches = (heightFeet * 12) + heightInches;
 
         // Check conditions for notifications
         if (age >= 50 || (age < 50 && familyHistory)) {
-            findings.push({ message: 'Schedule Colonoscopy.', type: 'routine' });
+            findings.push({ message: 'Colonoscopy.', type: 'routine' });
         }
 
         if (age >= 40 && gender === '0') {
-            findings.push({ message: 'Schedule Breast Cancer Screening (Q2 Years)', type: 'routine' });
+            findings.push({ message: 'Mammogram (Q2 Years)', type: 'routine' });
         }
 
         if (age >= 65 && gender === '0') {
-            findings.push({ message: 'Schedule Bone Density Screening.', type: 'routine' });
+            findings.push({ message: 'Bone Density Screening.', type: 'routine' });
         }
 
-        // if (gender === '0' && (age > 65 || (age <= 64 && menopause))) {
-        //     findings.push({ message: 'Schedule Bone Density Screening.', type: 'routine' });
-        // }
+        // Check pneumococcal vaccination conditions
+        const recommendVaccine = (
+            age >= 65 || 
+            (age >= 2 && (chronicIllnesses.length > 0 || sickleCell || smoker || reducedImmunity || specialEnvironment))
+        );
+
+        // If vaccination is recommended
+        if (recommendVaccine) {
+            findings.push({ message: 'Pneumococcal Vaccination.', type: 'routine' });
+        }
+
+        if (age >= 11 && age <= 16){
+            findings.push({message: 'Meningococcal Conjugate Vaccine.', type: 'routine'});
+        }
 
         if (gender === '0' && age >= 21 && age <= 65) {
-            findings.push({ message: 'Schedule Pap Smear Test.', type: 'routine' });
+            findings.push({ message: 'Pap Smear Test.', type: 'routine' });
         }
 
         if (age >= 15 && age <= 65) {
-            findings.push({ message: 'Schedule HIV Screening.', type: 'routine' });
+            findings.push({ message: 'HIV Screening.', type: 'routine' });
         }
 
         if (gender === "0" && (age >= 16 && age <= 55)) {
-            findings.push({ message: 'Schedule HCG.', type: 'routine' });
+            findings.push({ message: 'HCG.', type: 'routine' });
         }
 
         if (systolic > 0 && diastolic > 0) {
             if (systolic > 140 || diastolic > 90) {
-                findings.push({ message: 'Patient has High Blood Pressure.', type: 'critical' });
+                findings.push({ message: 'Elevated Blood Pressure.', type: 'critical' });
             }
             if (systolic < 90 || diastolic < 60) {
-                findings.push({ message: 'Patient has Low Blood Pressure.', type: 'critical' });
+                findings.push({ message: 'Low Blood Pressure.', type: 'critical' });
             }
         }
 
-        if (height > 0 && weight > 0) {
-            const bmi = (weight / (height * height)) * 703 // Multiply by 703 for lbs and inches
+        // Ensure both height and weight are valid before calculating BMI
+        if (totalHeightInInches > 0 && weight > 0) {
+            const bmi = (weight / (totalHeightInInches * totalHeightInInches)) * 703; // Multiply by 703 for lbs and inches
             if (bmi >= 30) {
-                findings.push({ message: `Patient is Obese. BMI is ${bmi.toFixed(1)}kg/m\u00B2`, type: 'critical' })
+                findings.push({ message: `Obese. BMI is ${bmi.toFixed(1)} kg/m\u00B2`, type: 'critical' });
             }
-            // else if (bmi >= 25) {
-            //     findings.push({ message: `Patient is Overweight. BMI is ${bmi.toFixed(1)}kg/m\u00B2`, type: 'warning' })
-            // } else if (bmi < 18.5) {
-            //     findings.push({ message: `Patient is Underweight. BMI is ${bmi.toFixed(1)}kg/m\u00B2`, type: 'warning' }) 
-            // } else {
-            //     findings.push({ message: `Patient has a Normal BMI. ${bmi.toFixed(1)}kg/m\u00B2`, type: 'routine' })
-            // }
         }
 
         // Add findings to notification board
@@ -102,13 +122,29 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('systolic').addEventListener('input', updateNotifications);
     document.getElementById('diastolic').addEventListener('input', updateNotifications);
     document.getElementById('weight').addEventListener('input', updateNotifications);
-    document.getElementById('height').addEventListener('input', updateNotifications);
+    document.getElementById('height-feet').addEventListener('input', updateNotifications);
+    document.getElementById('height-inches').addEventListener('input', updateNotifications);
     document.querySelectorAll('input[name="family-history"]').forEach(radio => {
         radio.addEventListener('change', updateNotifications);
     });
-    // document.querySelectorAll('input[name="menopause"]').forEach(radio => {
-    //     radio.addEventListener('change', updateNotifications);
-    // });
+    document.querySelectorAll('input[name="chronic-illness"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateNotifications);
+    });
+    document.querySelectorAll('input[name="sickle-cell"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateNotifications);
+    });
+    document.querySelectorAll('input[name="spleen-problems"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateNotifications);
+    });
+    document.querySelectorAll('input[name="reduced-immunity"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateNotifications);
+    });
+    document.querySelectorAll('input[name="smoke"]').forEach(radio => {
+        radio.addEventListener('change', updateNotifications);
+    });
+    document.querySelectorAll('input[name="special-environment"]').forEach(radio => {
+        radio.addEventListener('change', updateNotifications);
+    });
 
     // Function to reset the form and notifications
     function resetFormAndNotifications() {
@@ -148,43 +184,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Open new window for printing
         const printWindow = window.open('', '', 'height=600,width=800');
-        printWindow.document.write('<html><head><title>Medical Findings and Doctor\'s Remarks</title></head><body>');
+        printWindow.document.write('<html><head><title>Print Findings</title></head><body>');
         printWindow.document.write(printContent);
         printWindow.document.write('</body></html>');
-
-        printWindow.document.close(); // Complete writing
-        printWindow.print(); // Trigger the print dialog
-
-        // Optionally close the print window after printing
-        printWindow.onafterprint = function () {
-            printWindow.close();
-        };
-
-        // Reset form after print operation
-        resetFormAndNotifications();
+        printWindow.document.close();
+        printWindow.print();
+        resetFormAndNotifications()
     }
-
-    // exporting to PDF
-    async function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-    
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text("Medical Findings", 10, 10);
-    
-        // Collect data from notifications
-        const findings = [];
-        document.querySelectorAll('#notifications .notification').forEach((notification) => {
-            findings.push(notification.innerText);
-        });
-    
-        // Add findings to PDF
-        findings.forEach((finding, index) => {
-            doc.text(`${index + 1}. ${finding}`, 10, 20 + (10 * index)); // Adjust the Y position for each line
-        });
-    
-        // Save the PDF
-        doc.save('health_findings.pdf');
-    }
-    
 });

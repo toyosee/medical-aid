@@ -32,29 +32,64 @@
                     <form id="medical-form">
 
                         <div class="form-group">
-                            <label for="age">Age <span title="Please enter your age in years.">:</span></label>
+                            <label for="age"><strong>Age</strong> <span title="Please enter your age in years.">:</span></label>
                             <input type="number" id="age" name="age" min="0" max="120" required />
                         </div>
 
                         <div class="form-group">
-                            <label for="gender">Gender:</label>
+                            <label for="gender"><strong>Gender:</strong></label>
                             <select id="gender" name="gender" class="form-control" required>
                                 <option value="1">Male</option>
                                 <option value="0">Female</option>
-                            </select>
+                            </select> <hr>
                         </div>
 
                         <div class="form-group">
-                            <label for="family-history">Family History:</label><br>
+                            <label for="family-history"><strong>Family History (Colon Cancer):</strong></label><br>
                             <input type="radio" id="family-history-yes" name="family-history" value="1" required> Yes
-                            <input type="radio" id="family-history-no" name="family-history" value="0" required> No
+                            <input type="radio" id="family-history-no" name="family-history" value="0" required> No <hr>
                         </div>
 
-                        <!-- <div class="form-group">
-                            <label for="menopause">Gone Through Menopause:</label><br>
-                            <input type="radio" id="menopause-yes" name="menopause" value="1"> Yes
-                            <input type="radio" id="menopause-no" name="menopause" value="0"> No
-                        </div> -->
+                        <!-- Chronic illnesses as checkboxes -->
+                        <div class="form-group">
+                            <label><strong>Chronic Illnesses (select all that apply):</strong></label>
+                            <label><input type="checkbox" name="chronic-illness" value="heart-disease" /> Heart Disease</label>
+                            <label><input type="checkbox" name="chronic-illness" value="lung-disease" /> Lung Disease</label>
+                            <label><input type="checkbox" name="chronic-illness" value="asthma" /> Asthma</label>
+                            <label><input type="checkbox" name="chronic-illness" value="diabetes" /> Diabetes</label>
+                            <label><input type="checkbox" name="chronic-illness" value="liver-disease" /> Liver Disease</label>
+                            <label><input type="checkbox" name="chronic-illness" value="kidney-disease" /> Kidney Disease</label> <hr>
+                        </div>
+
+                            <!-- Sickle cell disease -->
+                        <div class="form-group">
+                            <label><strong>Disease (select if applicable):</strong></label><br>
+                            <label><input type="checkbox" name="sickle-cell" value="sickle-cell" /> Sickle Cell</label>
+                            <label><input type="checkbox" name="spleen-problems" value="spleen-problems" /> Spleen Problems</label> <hr>
+                        </div>
+
+                            <!-- Smoking as radio button -->
+                        <div class="form-group">
+                            <label><strong>Do you smoke?</strong></label>
+                            <label><input type="radio" name="smoke" value="1" required /> Yes</label>
+                            <label><input type="radio" name="smoke" value="0" required /> No</label> <hr>
+                        </div>
+
+                            <!-- Conditions that reduce immunity as checkboxes -->
+                        <div class="form-group">
+                            <label><strong>Serious Conditions (select all that apply):</strong></label>
+                            <label><input type="checkbox" name="reduced-immunity" value="hiv" /> HIV Infection</label>
+                            <label><input type="checkbox" name="reduced-immunity" value="organ-transplant" /> Organ Transplant</label>
+                            <label><input type="checkbox" name="reduced-immunity" value="bone-marrow-transplant" /> Bone Marrow Transplant</label>
+                            <label><input type="checkbox" name="reduced-immunity" value="cancer" /> Cancer</label> <hr>
+                        </div>
+
+                        <!-- Crowded living environment as radio button -->
+                        <div class="form-group">
+                            <label><strong>Do you live in a crowded environment?</strong></label>
+                            <label><input type="radio" name="special-environment" value="1" required /> Yes</label>
+                            <label><input type="radio" name="special-environment" value="0" required /> No</label> <hr>
+                        </div>
 
                         <div class="form-group">
                             <label for="systolic">Systolic BP:</label>
@@ -71,10 +106,15 @@
                             <input type="text" id="weight" name="weight" min="0" required />
                         </div>
                     
-                        <div class="form-group">
-                            <label for="height">Height (inches) <span title="Please enter your height in meters.">:</span></label>
-                            <input type="text" id="height" name="height" min="0" required />
-                        </div>
+                        <div class="form-group row">
+                            <label for="height-feet" class="col-sm-3 col-form-label">Height:</label>
+                            <div class="col-sm-4">
+                                <input type="number" id="height-feet" name="height-feet" class="form-control" placeholder="Feet" min="0" required />
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="number" id="height-inches" name="height-inches" class="form-control" placeholder="Inches" min="0" />
+                            </div>
+                        </div>                        
 
                         <button type="submit" class="btn btn-block mb-3 btn-transform">Diagnose</button>
                     </form>
@@ -87,7 +127,7 @@
                         <form id="doctor-note-form">
                             <input type="hidden" id="predicted-disease" name="predicted_disease" />
                             <div class="form-group">
-                                <label for="doctor-note">Enter Doctor's remark:</label>
+                                <label for="doctor-note" class="text-muted">Enter Doctor's remark:</label>
                                 <textarea id="doctor-note" name="doctor_note" rows="4" class="form-control" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-transform mb-3">Submit</button>
@@ -100,7 +140,7 @@
 
             <div class="col-md-6">
                 <div id="notification-board" class="notification-board">
-                    <h4><i class="fas fa-circle-exclamation"></i> Findings <strong id="findings"></strong></h4>
+                    <h4><i class="fas fa-circle-exclamation"></i> Recommendations <strong id="findings"></strong></h4>
                     <div id="notifications" ></div>
                 </div>
             </div>
